@@ -1,0 +1,42 @@
+/* Importação do Bootstrap */
+@import '~bootstrap/dist/css/bootstrap.min.css';
+
+/* Estrutura básica da aplicação */
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.container {
+  flex: 1;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+/* Espaçamentos consistentes */
+.mb-section {
+  margin-bottom: 40px;
+}
+
+/* Ajustes para tabelas responsivas */
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Links estilizados */
+a {
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+/* Classes utilitárias adicionais */
+.text-justify {
+  text-align: justify;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}

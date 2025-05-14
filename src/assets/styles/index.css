@@ -1,0 +1,7 @@
+/* Importe todos os estilos globais e de componentes */
+@import './App.css';
+@import './components/Assentos.css';
+@import './components/Forms.css';
+@import './components/Tables.css';
+
+/* Adicione estilos personalizados adicionais aqui */
