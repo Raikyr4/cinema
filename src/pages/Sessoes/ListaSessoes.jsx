@@ -4,7 +4,6 @@ import { getSalas } from '../../services/salasService';
 import { getSessoes} from '../../services/sessoesService';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import Button from '../../components/common/ui/Button';
 import './styles/ListaSessoes.css';
 
 const ListaSessoes = () => {

@@ -32,18 +32,13 @@ export const salvarSessao = (sessao) => {
   if (!sessao.filmeId || !sessao.salaId || !sessao.dataHora) {
     throw new Error('Filme, sala e data/hora são obrigatórios');
   }
-
-  if (sessao.id) {
-    return api.put(SESSOES_KEY, sessao.id, sessao);
-  } else {
-    const novaSessao = {
-      ...sessao,
-      id: Date.now().toString(),
-      preco: parseFloat(sessao.preco) || 30.00,
-      createdAt: new Date().toISOString()
-    };
-    return api.post(SESSOES_KEY, novaSessao);
-  }
+  const novaSessao = {
+    ...sessao,
+    id: Date.now().toString(),
+    preco: parseFloat(sessao.preco) || 30.00,
+    createdAt: new Date().toISOString()
+  };
+  return api.post(SESSOES_KEY, novaSessao);
 };
 
 export const excluirSessao = (id) => api.delete(SESSOES_KEY, id);

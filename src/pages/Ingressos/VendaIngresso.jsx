@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { getFilmes } from '../../services/filmesService';
 import { getSalas } from '../../services/salasService';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { getSessoes} from '../../services/sessoesService';
-import { salvarIngresso } from '../../services/ingressosService';
+import { getSessoes } from '../../services/sessoesService';
+import { salvarIngresso, getIngressosPorSessao } from '../../services/ingressosService';
 import FormInput from '../../components/common/ui/FormInput';
 import Button from '../../components/common/ui/Button';
 import AssentosGrid from '../../components/features/Assentos/AssentosGrid';
@@ -31,6 +31,24 @@ const VendaIngresso = () => {
   const [capacidadeSala, setCapacidadeSala] = useState(0);
   const [carregando, setCarregando] = useState(true);
 
+const carregarAssentosOcupados = async (sessaoId) => {
+try {
+  const ingressos = await getIngressosPorSessao(sessaoId);
+  setAssentosOcupados(ingressos.map(i => i.assento));
+  
+  // Encontra a sessão e a sala correspondente
+  const sessao = sessoes.find(s => s.id === sessaoId);
+  if (sessao) {
+    const sala = salas.find(s => s.id === sessao.salaId);
+    if (sala) {
+      setCapacidadeSala(sala.capacidade);
+    }
+  }
+} catch (error) {
+  console.error('Erro ao carregar assentos:', error);
+}
+};
+
   useEffect(() => {
     const carregarDados = async () => {
       try {
@@ -44,8 +62,18 @@ const VendaIngresso = () => {
         setFilmes(filmesData);
         setSalas(salasData);
         
+        // Agora que temos os dados carregados, podemos carregar os assentos
         if (sessaoIdParam) {
-          carregarAssentosOcupados(sessaoIdParam);
+          // Encontra a sessão e a sala para definir a capacidade inicial
+          const sessao = sessoesData.find(s => s.id === sessaoIdParam);
+          if (sessao) {
+            const sala = salasData.find(s => s.id === sessao.salaId);
+            if (sala) {
+              setCapacidadeSala(sala.capacidade);
+            }
+          }
+          
+          await carregarAssentosOcupados(sessaoIdParam);
         }
       } catch (error) {
         console.error('Erro ao carregar dados:', error);
@@ -57,30 +85,13 @@ const VendaIngresso = () => {
     carregarDados();
   }, [sessaoIdParam]);
 
-  const carregarAssentosOcupados = async (sessaoId) => {
-    try {
-      const ingressos = await salvarIngresso.getAllForSessao(sessaoId);
-      setAssentosOcupados(ingressos.map(i => i.assento));
-      
-      const sessao = sessoes.find(s => s.id === sessaoId);
-      if (sessao) {
-        const sala = salas.find(s => s.id === sessao.salaId);
-        if (sala) {
-          setCapacidadeSala(sala.capacidade);
-        }
-      }
-    } catch (error) {
-      console.error('Erro ao carregar assentos:', error);
-    }
-  };
-
   const handleSelectAssento = (assento) => {
-    setIngresso({ ...ingresso, assento });
+    setIngresso(prev => ({ ...prev, assento }));
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setIngresso({ ...ingresso, [name]: value });
+    setIngresso(prev => ({ ...prev, [name]: value }));
     
     if (name === 'sessaoId' && value) {
       carregarAssentosOcupados(value);
@@ -97,7 +108,6 @@ const VendaIngresso = () => {
       
       await salvarIngresso({
         ...ingresso,
-        id: Date.now().toString(),
         dataVenda: new Date().toISOString()
       });
       
@@ -105,6 +115,7 @@ const VendaIngresso = () => {
       navigate('/');
     } catch (error) {
       console.error('Erro ao vender ingresso:', error);
+      alert('Erro ao vender ingresso: ' + error.message);
     }
   };
 
@@ -181,17 +192,25 @@ const VendaIngresso = () => {
                     value={ingresso.cpf}
                     onChange={handleChange}
                     required
+                    pattern="\d{3}\.\d{3}\.\d{3}-\d{2}"
+                    placeholder="000.000.000-00"
                   />
                   
                   <div className="mb-3">
                     <label className="form-label">Selecione o Assento</label>
-                    <AssentosGrid
-                      capacidade={capacidadeSala}
-                      assentosOcupados={assentosOcupados}
-                      assentoSelecionado={ingresso.assento}
-                      onSelectAssento={handleSelectAssento}
-                    />
-                    <LegendaAssentos />
+                    {capacidadeSala > 0 ? (
+                      <>
+                        <AssentosGrid
+                          capacidade={capacidadeSala}
+                          assentosOcupados={assentosOcupados}
+                          assentoSelecionado={ingresso.assento}
+                          onSelectAssento={handleSelectAssento}
+                        />
+                        <LegendaAssentos />
+                      </>
+                    ) : (
+                      <p>Carregando assentos...</p>
+                    )}
                     <input
                       type="hidden"
                       name="assento"
@@ -201,7 +220,7 @@ const VendaIngresso = () => {
                   </div>
                   
                   <FormInput
-                    label="Tipo de Pagamento"
+                    label="Método de Pagamento"
                     type="select"
                     name="pagamento"
                     value={ingresso.pagamento}
@@ -212,8 +231,12 @@ const VendaIngresso = () => {
                 </>
               )}
               
-              <div className="form-actions">
-                <Button type="submit" variant="success" disabled={!ingresso.assento}>
+              <div className="form-actions mt-4">
+                <Button 
+                  type="submit" 
+                  variant="success" 
+                  disabled={!ingresso.assento || !ingresso.pagamento}
+                >
                   Confirmar Venda
                 </Button>
               </div>

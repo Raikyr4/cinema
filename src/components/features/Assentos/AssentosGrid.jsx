@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Assento from './Assento';
+import '../../../assets/styles/components/Assentos.css'; // Importando o CSS para estilização
 
 const AssentosGrid = ({ capacidade, assentosOcupados, assentoSelecionado, onSelectAssento }) => {
   const gerarAssentos = () => {
@@ -30,16 +31,18 @@ const AssentosGrid = ({ capacidade, assentosOcupados, assentoSelecionado, onSele
 
   return (
     <div className="assentos-container">
-      <div className="tela">TELA</div>
-      {assentos.map((assento) => (
-        <Assento
-          key={assento.codigo}
-          codigo={assento.codigo}
-          ocupado={assento.ocupado}
-          selecionado={assento.selecionado}
-          onSelect={onSelectAssento}
-        />
-      ))}
+      <div className="tela mb-3">TELA</div>
+      <div className="assentos-grid">
+        {assentos.map((assento) => (
+          <Assento
+            key={assento.codigo}
+            codigo={assento.codigo}
+            ocupado={assento.ocupado}
+            selecionado={assento.selecionado}
+            onSelect={onSelectAssento}
+          />
+        ))}
+      </div>
     </div>
   );
 };

@@ -48,7 +48,6 @@ const CadastroFilme = () => {
     try {
       await salvarFilme({
         ...filme,
-        id: Date.now().toString(),
         duracao: parseInt(filme.duracao)
       });
       navigate('/');

@@ -1,6 +1,4 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
-import Button from '../../components/common/ui/Button';
 import './HomePage.css';
 
 const HomePage = () => {

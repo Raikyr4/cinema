@@ -1,7 +1,7 @@
 // Adicione no início do arquivo:
 import { getFilmes } from '../../services/filmesService';
 import { getSalas } from '../../services/salasService';
-import { getSessoes, salvarSessao } from '../../services/sessoesService';
+import { salvarSessao } from '../../services/sessoesService';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import FormInput from '../../components/common/ui/FormInput';
@@ -52,7 +52,6 @@ const CadastroSessao = () => {
     try {
       await salvarSessao({
         ...sessao,
-        id: Date.now().toString(),
         preco: parseFloat(sessao.preco)
       });
       navigate('/');
