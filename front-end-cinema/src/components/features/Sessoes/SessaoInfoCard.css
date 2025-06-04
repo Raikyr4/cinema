@@ -1,0 +1,23 @@
+.sessao-info-card {
+  transition: all 0.3s ease;
+}
+
+.sessao-info-card:hover {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.sessao-info-card .card-title {
+  color: #2c3e50;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.sessao-info-card .card-text {
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.sessao-info-card .card-text strong {
+  font-weight: 500;
+  color: #343a40;
+}

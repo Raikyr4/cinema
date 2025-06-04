@@ -1,0 +1,19 @@
+.table-actions {
+  white-space: nowrap;
+}
+
+.table-actions .btn {
+  margin-right: 5px;
+}
+
+@media (max-width: 768px) {
+  .table th, .table td {
+    padding: 0.5rem;
+    font-size: 0.875rem;
+  }
+  
+  .table-actions .btn {
+    padding: 0.2rem 0.4rem;
+    font-size: 0.75rem;
+  }
+}
